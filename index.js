@@ -1,58 +1,58 @@
-// MongoDB Playground
-// Use Ctrl+Space inside a snippet or a string literal to trigger completions.
+const express= require('express');
+const mongoose= require('mongoose');
 
-// The current database to use.
-use('test');
+mongoose.connect('mongodb+srv://anacaszapata:z8dx8O6uKDIbJzLi@cluster0.a5nijxb.mongodb.net/')
+const db=mongoose.connection;
 
-// Create a new document in the collection.
-db.getCollection('estudiantes').insertMany([
-{
-    nombre:"Ana Sofia",
-    apellido:"Castrillon",
-    edad:21,
-    clan:"Van Rossum",
-    cohorte:1
-},
-{
-    nombre:"Camila",
-    apellido:"Sepulveda",
-    edad:21,
-    clan:"Van Rossum",
-    cohorte:1
-},
-{
-    nombre:"Alexander",
-    apellido:"Hernandez",
-    edad:22,
-    clan:"Van Rossum",
-    cohorte:1
-},
-{
-    nombre:"Daniel",
-    apellido:"Jimenez",
-    edad:22,
-    clan:"Van Rossum",
-    cohorte:1
-},
-{
-    nombre:"Harol",
-    apellido:"Chaverra",
-    edad:18,
-    clan:"Lovelace",
-    cohorte:1
-},
-{
-    nombre:"Nicolas",
-    apellido:"Luna",
-    edad:23,
-    clan:"Meta",
-    cohorte:1
-},
-{
-    nombre:"Alejandro",
-    apellido:"Sanchez",
-    edad:20,
-    clan:"Meta",
-    cohorte:1
-}
-]);
+db.on('error',console.error.bind(console,'connection error'));
+
+db.once('open', function(){
+    console.log('Connected to MongoDB');
+    // model
+    userSchema = mongoose.Schema({
+        nombre:String,
+        apellido:String,
+        edad:Number,
+        clan:String,
+        cohorte:Number
+        
+    });
+   
+const User = mongoose.model('estudiantes' ,userSchema);
+
+const app = express();
+app.use(express.json());
+
+//  1)mayores de 18 años
+app.get("/api/estudiantes/adult", async(req,res) => {
+    const users=await User.find({edad:{$gt:18}});
+    res.json(users);
+});
+
+
+// 2) Usuarios que sean de Van Rossum o de Meta
+ app.get("/api/estudiantes/clan", async(req,res) => {
+     const users = await User.find({clan:{$in:["Van Rossum", "Meta"]} });
+     res.json(users);
+ });
+
+
+// 4)Obtener a todos los usuarios que sean de Van Rossum y tengan mas de 21 años
+app.get("/api/estudiantes/clanEdad", async (req, res) => {
+    const users = await User.find({$and: [{ clan: "Van Rossum" },{ edad: { $gt: 21 } }] });
+    res.json(users);
+});
+
+
+// 5)Obtener a todos los usuarios que no sean de Van Rossum.
+app.get("/api/estudiantes/notVanRossum", async (req, res) => {
+    const users = await User.find({clan: { $ne: "Van Rossum" } });
+    res.json(users);
+});
+
+
+
+app.listen(3000,function(){
+    console.log('Servidor escuchando en el puerto 3000');
+});
+})
