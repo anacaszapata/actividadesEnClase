@@ -40,6 +40,22 @@ const initializeData = async () => {
         ];
         await User.insertMany(usersData);
         console.log('Data successfully initialized');
+        usersData = [
+            {
+                nombre:"Alexander",
+                apellido:"Hernandez",
+                edad:22,
+                clan:"Van Rossum",
+                cohorte:1
+            },
+            {
+                nombre:"Daniel",
+                apellido:"Jimenez",
+                edad:22,
+                clan:"Van Rossum",
+                cohorte:1
+                },
+        ];
         } catch(error){
             console.error('Data initialization error:',error);
             process.exit(1);
