@@ -3,8 +3,9 @@ let User
 
 const connectDatabase = async () => {
     try{
+         // Se comprueba si el modelo de usuario (User) ya está definido. Si no está definido, se define utilizando el método mongoose.model(). Se pasa el nombre del modelo como primer argumento y el esquema del modelo como segundo argumento
         if(!User){
-            User = mongoose.model('estudiantes',require('../models/userModel').schema);
+            User = mongoose.model('notas',require('../models/userModel').schema);
         }
         await mongoose.connect('mongodb+srv://anacaszapata:z8dx8O6uKDIbJzLi@cluster0.a5nijxb.mongodb.net/')
         .then(()=>console.log('MongoDB connected'))
@@ -17,6 +18,8 @@ const connectDatabase = async () => {
         process.exit(1);
     }
 };
+// Se define una función asíncrona llamada initializeData, que se encarga de borrar todos los documentos de la colección User y de insertar algunos datos de ejemplo en la base de datos
+
 
 const initializeData = async () => {
     try{
@@ -24,38 +27,19 @@ const initializeData = async () => {
 
         const usersData = [
             {
-                nombre:"Ana Sofia",
-                apellido:"Castrillon",
-                edad:21,
-                clan:"Van Rossum",
-                cohorte:1
+                name:"Sofia",
+                email:"anacas@gmail.com",
+                password:"Medellin",
+                
             },
             {
-                nombre:"Camila",
-                apellido:"Sepulveda",
-                edad:21,
-                clan:"Van Rossum",
-                cohorte:1
+                name:"Victor",
+                email:"viictormejia@gmail.com",
+                password:"Bogota",
             },
         ];
         await User.insertMany(usersData);
         console.log('Data successfully initialized');
-        usersData = [
-            {
-                nombre:"Alexander",
-                apellido:"Hernandez",
-                edad:22,
-                clan:"Van Rossum",
-                cohorte:1
-            },
-            {
-                nombre:"Daniel",
-                apellido:"Jimenez",
-                edad:22,
-                clan:"Van Rossum",
-                cohorte:1
-                },
-        ];
         } catch(error){
             console.error('Data initialization error:',error);
             process.exit(1);

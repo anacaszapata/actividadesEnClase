@@ -8,6 +8,11 @@ const port = 3000;
 
 connectDB();
 
+app.use(bodyParser.json())
+
+app.use(bodyParser.urlencoded({ extended: false}))
+
+
 app.use('/',routes);
 
-app.listen(port,()=> console.log('listening at http://localhost:${port}'));
+app.listen(port,() => console.log(`listening at http://localhost:${port}`));
